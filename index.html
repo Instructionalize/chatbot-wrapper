@@ -164,7 +164,7 @@
   </div>
 
   <script>
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbwQOenACVOSaLTjcVGAIgAFZ9taFgxR2LgX23UNmW37ay5TF8kPp4l9QPX5hnXRdO7q/exec"; // <-- Replace if needed
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbxiIootBWbaK9VII8tCHz7LNltWxVFu26bNsQOgQijLI_Acer3dAdd0uijEkhKF8BMJ/exec"; // <-- Replace if needed
 
     function appendMessage(text, type) {
       const msg = document.createElement("div");
@@ -175,27 +175,24 @@
     }
 
     function sendTextInput() {
-      const input = document.getElementById("textInput");
-      const query = input.value.trim();
+      const input  = document.getElementById("textInput");
+      const query  = input.value.trim();
       if (!query) return;
 
       appendMessage(query, "user");
       input.value = "";
 
-      // SIMPLE request → no CORS pre-flight
+      // encode as form data  (query=hello%20world)
+      const body = new URLSearchParams({ query });
+
       fetch(scriptUrl, {
         method: "POST",
-        // 👈 text/plain is CORS-simple
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        // we’ll just send the raw JSON string as plain-text
-        body: JSON.stringify({ query })
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body
       })
       .then(r => r.json())
       .then(data => appendMessage(data.text || "No response", "assistant"))
-      .catch(err => {
-        console.error(err);
-        appendMessage("Something went wrong!", "assistant");
-      });
+      .catch(err => { console.error(err); appendMessage("Something went wrong!", "assistant"); });
     }
 
   </script>
