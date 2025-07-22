@@ -182,22 +182,22 @@
       appendMessage(query, "user");
       input.value = "";
 
+      // SIMPLE request → no CORS pre-flight
       fetch(scriptUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        // 👈 text/plain is CORS-simple
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        // we’ll just send the raw JSON string as plain-text
         body: JSON.stringify({ query })
       })
-      .then(response => response.json())
-      .then(data => {
-        appendMessage(data.text || "No response", "assistant");
-      })
-      .catch(error => {
-        console.error("Error:", error);
+      .then(r => r.json())
+      .then(data => appendMessage(data.text || "No response", "assistant"))
+      .catch(err => {
+        console.error(err);
         appendMessage("Something went wrong!", "assistant");
       });
     }
+
   </script>
 </body>
 </html>
